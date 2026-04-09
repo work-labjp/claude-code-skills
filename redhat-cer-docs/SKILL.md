@@ -67,7 +67,7 @@ README.adoc (master document)
 │   ├── 090_sobre-el-cliente.adoc      # Contexto del cliente
 │   ├── 100_documentos-dado-cliente.adoc
 │   ├── 110_proposito-y-enfoque.adoc   # Propósito y enfoque
-│   ├── 120_resumen-del-alcance.adoc   # Alcance por sprints (tabla)
+│   ├── 120_resumen-del-alcance.adoc   # Alcance (tabla actividades + estado)
 │   │
 │   ├── 140_architectura.adoc          # ARQUITECTURA TÉCNICA
 │   ├── 150_implementacion.adoc        # PROCEDIMIENTO DE IMPLEMENTACIÓN
@@ -114,21 +114,35 @@ Las actividades realizadas incluyen:
 
 **NO**: prosa narrativa. **SÍ**: bullets concretos con versiones, cantidades, nombres técnicos.
 
-### 120 — Resumen del Alcance (tabla de sprints)
+### 120 — Resumen del Alcance
+
+Lista de actividades ejecutadas con estado. Sin formato de sprints ni cronológico.
 
 ```asciidoc
-.Resumen del alcance del proyecto
-[cols="1,2,5",options="header"]
+.Alcance del engagement
+[cols="1,4,2",options="header"]
 |===
-| Sprint | Semana | Objetivos
-.2+|1
-|Feb 5 - 9
-a|
-- Revisión de arquitectura — completado
-- Preparación de infraestructura — completado
-|Feb 12 - 16
-a|
-- Despliegue de {ocp} en desarrollo — completado
+|# |Actividad |Estado
+
+|1
+|Instalación del clúster {ocp} 4.18 (Agent-based Installer, 13 nodos)
+|[green]#Completado#
+
+|2
+|Configuraciones Day-2 (infra nodes, ingress, monitoring, LDAP, NTP, backup)
+|[green]#Completado#
+
+|3
+|Instalación de operadores ({rhamq}, ArgoCD, Tekton, Apicurio)
+|[green]#Completado#
+
+|4
+|Transferencia de conocimiento (4 sesiones)
+|[green]#Completado#
+
+|5
+|Logging centralizado (LokiStack + Vector)
+|[red]#Pendiente# — requiere backend S3
 |===
 ```
 
@@ -237,7 +251,7 @@ Qué recomienda {rhconsulting}. Incluir referencia a docs oficiales.
 1. **Bootstrap** — Clonar template o localizar CER existente
 2. **Variables** — Llenar `customer-vars.adoc` + `document-vars.adoc`
 3. **080 Resumen** — Objetivo, alcance, estado, pendientes
-4. **120 Alcance** — Tabla de sprints
+4. **120 Alcance** — Tabla de actividades con estado
 5. **140 Arquitectura** — Tablas de sizing, topología, networking, storage
 6. **150 Implementación** — Procedimiento paso a paso con comandos
 7. **160 Validación** — Resumen + referencia al ATP
