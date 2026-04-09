@@ -15,54 +15,72 @@ allowed-tools: Bash Read Write mcp__playwright__browser_navigate mcp__playwright
 
 # Terminal Screenshot Generator
 
-Generate professional PNG screenshots that look like real terminal windows from
-command output. Uses Playwright headless browser to render styled HTML — no
-screen or display required.
+Genera PNGs profesionales que parecen ventanas de terminal reales.
+Playwright headless — sin pantalla ni display.
 
-## How It Works
+## Reglas de Estandarización (OBLIGATORIAS)
 
-1. Execute the command (locally or via SSH)
-2. Generate an HTML page styled as a terminal window
-3. Render with Playwright and screenshot the terminal element
-4. Save as PNG
+### Tamaño fijo
+- **Viewport**: 1920x1080 SIEMPRE
+- **Ancho terminal**: `min-width: 1100px` — todas las capturas tienen el mismo ancho
+- **Font size**: `13px` FIJO — nunca cambiar entre capturas
+- **Padding**: `20px` en content — consistente
 
-## Template
+### Formato: Comando + Resultado (SIEMPRE)
+Cada captura DEBE mostrar:
+1. **Prompt** (verde) — `[user@host path]$ `
+2. **Comando** (azul) — el comando ejecutado
+3. **Línea vacía**
+4. **Output** (gris claro) — resultado real del comando
 
-The HTML template uses this style:
+NUNCA generar capturas solo con output sin el comando.
+NUNCA generar capturas solo con el comando sin output.
 
-- **Title bar**: dark gray (#313244) with red/yellow/green dots + title text
-- **Background**: dark (#1e1e2e), Catppuccin Mocha theme
-- **Prompt**: green (#a6e3a1) bold
-- **Command**: blue (#89b4fa) bold
-- **Output**: light gray (#cdd6f4)
-- **Font**: Courier New monospace, 11px
-- **Border radius**: 10px with box-shadow
+### Multi-comando en una captura
+Si hay múltiples comandos en una captura, cada uno sigue el mismo patrón:
+```
+[user@host ~]$ comando1
+...output1...
 
-## Execution Steps
+[user@host ~]$ comando2
+...output2...
+```
 
-### Step 1: Ensure HTTP server is running
+### Font y colores (Catppuccin Mocha — NO cambiar)
+- **Font**: `'JetBrains Mono', 'Fira Code', 'Courier New', monospace` — 13px
+- **Background**: `#1e1e2e`
+- **Titlebar**: `#313244`
+- **Prompt**: `#a6e3a1` (verde) bold
+- **Comando**: `#89b4fa` (azul) bold
+- **Output**: `#cdd6f4` (gris claro)
+- **Dots**: red `#f38ba8`, yellow `#f9e2af`, green `#a6e3a1`
+- **Border radius**: 10px, box-shadow `0 8px 32px rgba(0,0,0,0.3)`
 
-Check if port 8899 is serving. If not, start one:
+---
+
+## Workflow
+
+### 1. HTTP server
 
 ```bash
 lsof -i :8899 >/dev/null 2>&1 || (cd /tmp && python3 -m http.server 8899 &)
 ```
 
-### Step 2: Execute command and capture output
-
-Run the command and store the output. For remote commands use SSH:
+### 2. Ejecutar comando
 
 ```bash
 # Local
-OUTPUT=$(kubectl get nodes -o wide 2>&1)
+OUTPUT=$(oc get nodes -o wide 2>&1)
 
-# Remote via SSH
+# Remoto via SSH
 OUTPUT=$(ssh <alias> "<command>" 2>/dev/null | grep -v Warning)
 ```
 
-### Step 3: Generate terminal HTML
+SIEMPRE ejecutar el comando REAL — nunca inventar output.
 
-Write `/tmp/terminal-capture.html` with:
+### 3. Generar HTML
+
+Escribir `/tmp/terminal-capture.html`:
 
 ```html
 <!DOCTYPE html>
@@ -76,8 +94,8 @@ body { margin: 0; padding: 20px; background: #f0f0f0; display: inline-block; }
   border-radius: 10px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.3);
   overflow: hidden;
-  font-family: 'Courier New', monospace;
-  display: inline-block;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  min-width: 1100px;
 }
 .titlebar {
   background: #313244;
@@ -92,10 +110,10 @@ body { margin: 0; padding: 20px; background: #f0f0f0; display: inline-block; }
 .green { background: #a6e3a1; }
 .title { color: #6c7086; font-size: 12px; margin-left: 10px; }
 .content {
-  padding: 15px 20px 20px 20px;
+  padding: 20px;
   color: #cdd6f4;
-  font-size: 11px;
-  line-height: 1.4;
+  font-size: 13px;
+  line-height: 1.5;
   white-space: pre;
   overflow: visible;
 }
@@ -118,7 +136,7 @@ OUTPUT_PLACEHOLDER</div>
 </html>
 ```
 
-Replace placeholders using Python to HTML-escape the output:
+Reemplazar placeholders con Python (HTML-escape obligatorio):
 
 ```python
 python3 -c "
@@ -129,114 +147,75 @@ with open('/tmp/terminal-capture.html', 'r') as f:
     content = f.read()
 content = content.replace('OUTPUT_PLACEHOLDER', escaped)
 content = content.replace('TITLE_PLACEHOLDER', 'user@host: /path')
-content = content.replace('PROMPT_PLACEHOLDER', '[user@host path]# ')
+content = content.replace('PROMPT_PLACEHOLDER', '[user@host path]$ ')
 content = content.replace('COMMAND_PLACEHOLDER', 'the command')
 with open('/tmp/terminal-capture.html', 'w') as f:
     f.write(content)
 "
 ```
 
-### Step 4: Screenshot with Playwright
+### 4. Screenshot con Playwright
 
 ```javascript
-// Use mcp__playwright__browser_run_code
 async (page) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
   await page.goto('http://localhost:8899/terminal-capture.html');
   await page.waitForTimeout(500);
   const terminal = await page.locator('.terminal');
-  await terminal.screenshot({
-    path: '/path/to/output.png',
-    type: 'png',
-    scale: 'device'
-  });
+  await terminal.screenshot({ path: '/path/to/output.png', type: 'png', scale: 'device' });
   return 'done';
 }
 ```
 
-## Parameters
+`scale: 'device'` para texto nítido. Viewport 1920x1080 SIEMPRE.
 
-When invoked, determine these from context or arguments:
+---
 
-| Parameter | Description | Example |
+## Parámetros
+
+| Parámetro | Descripción | Ejemplo |
 |-----------|-------------|---------|
-| **command** | The command to execute | `oc get nodes -o wide` |
-| **host** | SSH alias or "local" | `cabasprd`, `cabascnt`, `local` |
-| **title** | Title bar text | `root@prbast1001: /opt/OCP4` |
-| **prompt** | Shell prompt text | `[root@prbast1001 install-fase2]# ` |
-| **output_path** | Where to save PNG | `evidencias/01-nodos.png` |
-| **env_vars** | Environment to set before command | `KUBECONFIG=/opt/OCP4/install-fase2/auth/kubeconfig` |
+| **command** | Comando a ejecutar | `oc get nodes -o wide` |
+| **host** | SSH alias o "local" | `bastion`, `local` |
+| **title** | Texto del titlebar | `root@bastion: /opt/OCP4` |
+| **prompt** | Prompt del shell | `[root@bastion ~]$ ` |
+| **output_path** | Dónde guardar PNG | `evidencias/01-nodos.png` |
+
+### Consistencia entre capturas
+
+En un batch, title y prompt DEBEN ser iguales en TODAS las capturas:
+- Mismo usuario
+- Mismo host
+- Mismo path (o path relevante)
+
+---
 
 ## Batch Mode
 
-For generating multiple screenshots (e.g., ATP evidencias), accept a list:
+Para múltiples capturas (ej: evidencias ATP):
 
-```
-/terminal-screenshot batch
-  host: cabasprd
-  env: KUBECONFIG=/opt/OCP4/install-fase2/auth/kubeconfig
-  title: root@prbast1001: /opt/OCP4
-  prompt: [root@prbast1001 ~]#
-  commands:
-    - cmd: "oc get nodes -o wide"
-      out: evidencias/01-nodos-cluster.png
-    - cmd: "oc get co"
-      out: evidencias/02-cluster-operators.png
-    - cmd: "oc get mcp"
-      out: evidencias/03-mcp.png
-```
+1. Iniciar HTTP server una vez
+2. Loop: ejecutar → generar HTML → screenshot
+3. Reportar resumen
 
-For batch mode:
-1. Start HTTP server once
-2. Loop through commands: execute, generate HTML, screenshot
-3. Report summary of generated files
+Todas las capturas del batch usan:
+- Mismo viewport (1920x1080)
+- Mismo font (13px)
+- Mismo min-width (1100px)
+- Mismo theme (Catppuccin Mocha)
+- Mismo prompt/title
 
-## Multi-command Screenshots
+---
 
-Some evidencias need multiple commands in one screenshot. Concatenate outputs:
+## Reglas
 
-```bash
-OUTPUT=$(ssh host "cmd1 2>&1; echo ''; cmd2 2>&1")
-```
-
-Show both commands in the terminal:
-
-```
-[root@host ~]# cmd1
-...output1...
-
-[root@host ~]# cmd2
-...output2...
-```
-
-For multi-command, build the content manually with multiple prompt+command+output blocks.
-
-## Customization
-
-### Font size
-Change `.content { font-size: 11px; }` — use 10px for wide outputs, 12px for short ones.
-
-### Theme variants
-- **Catppuccin Mocha** (default): bg=#1e1e2e, titlebar=#313244
-- **Dracula**: bg=#282a36, titlebar=#44475a
-- **Nord**: bg=#2e3440, titlebar=#3b4252
-
-### Max width
-If output is very wide, consider using `-o custom-columns` or column filtering instead of `-o wide` to keep screenshots readable.
-
-## Rules
-
-1. ALWAYS execute the REAL command — never fake output
-2. HTML-escape ALL output with `html.escape()` to prevent XSS/rendering issues
-3. Use `grep -v Warning` to filter SSH warnings from output
-4. Title and prompt MUST be consistent (same user, host, path)
-5. Ensure HTTP server is running before Playwright navigation
-6. Use `scale: 'device'` in screenshot for crisp text
-7. Set viewport to 1920x1080 to fit wide outputs
-8. For very long outputs (>50 lines), consider splitting into multiple screenshots
-
-## Do NOT use this skill for
-
-- Taking screenshots of GUI applications (use grim/flameshot instead)
-- Capturing browser pages (use Playwright directly)
-- Recording terminal sessions (use asciinema)
+1. SIEMPRE ejecutar el comando REAL — nunca inventar output
+2. SIEMPRE mostrar comando + output juntos
+3. SIEMPRE HTML-escape con `html.escape()`
+4. SIEMPRE `min-width: 1100px` para ancho consistente
+5. SIEMPRE font 13px — nunca variar
+6. SIEMPRE viewport 1920x1080
+7. SIEMPRE `scale: 'device'` para texto nítido
+8. Filtrar warnings de SSH con `grep -v Warning`
+9. Si output > 50 líneas, dividir en múltiples capturas
+10. NO usar para GUIs, browsers, ni grabaciones (asciinema)
