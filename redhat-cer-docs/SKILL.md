@@ -19,16 +19,58 @@ allowed-tools: Read Glob Grep Edit Write Bash
 Genera **Consulting Engagement Reports (CER)** como documentos técnicos con tablas,
 procedimientos, configuraciones y datos concretos. **NO es un diario de actividades.**
 
-## Filosofía: Documento Técnico de Ejecución
+## Filosofía: Conectar → Extraer → Documentar
 
-El CER documenta **qué se hizo y cómo**, no cuándo:
-- Tablas con datos concretos (versiones, IPs, sizing, configuraciones)
-- Procedimientos paso a paso con comandos reales
-- Validaciones con estado PASS/FAIL
+El CER se **conecta al cluster** para extraer datos reales y generar secciones técnicas
+con información verificada — no placeholders.
+
+- Tablas con datos concretos extraídos del cluster (versiones, IPs, sizing, configuraciones)
+- Procedimientos paso a paso con comandos reales ejecutados
+- Validaciones con estado PASS/FAIL verificadas en el cluster
 - Problemas con causa raíz y resolución técnica
 - Recomendaciones con justificación y referencia oficial
 
 **NO es**: un diario, cronología, blog, ni narrativa. **Sin fechas** en el contenido técnico.
+
+---
+
+## Conexión al cluster
+
+### Opción A: oc directo (kubeconfig local)
+```bash
+oc whoami && oc get nodes --no-headers | head -1
+```
+
+### Opción B: via SSH al bastion
+```bash
+ssh <user>@<bastion> "oc whoami && oc get nodes --no-headers | head -1"
+```
+
+### Opción C: sin acceso
+Generar secciones con placeholders `#TODO#` para que el usuario complete manualmente.
+
+### Qué extraer del cluster automáticamente
+
+| Sección | Datos a extraer | Comando |
+|---------|----------------|---------|
+| **140 Arquitectura — Topología** | Nodos, IPs, roles, versión | `oc get nodes -o wide` |
+| **140 Arquitectura — Operadores** | CSVs instalados, versiones | `oc get csv -A --no-headers` |
+| **140 Arquitectura — Storage** | StorageClasses, PVCs | `oc get sc` y `oc get pv` |
+| **140 Arquitectura — Networking** | SDN, IngressControllers | `oc get co network` y `oc get ingresscontroller -A` |
+| **140 Arquitectura — Monitoring** | ConfigMap monitoring | `oc get cm cluster-monitoring-config -n openshift-monitoring` |
+| **150 Implementación — Versión** | ClusterVersion, canal | `oc get clusterversion` |
+| **150 Implementación — install-config** | Networking CIDRs | `oc get network.config cluster -o yaml` |
+| **160 Validación — Nodos** | Status de nodos | `oc get nodes -o wide` |
+| **160 Validación — Operators** | Estado de COs | `oc get co` |
+| **160 Validación — MCP** | Estado de MCPs | `oc get mcp` |
+| **160 Validación — Alertas** | Alertas activas | API Prometheus vía `oc exec` |
+
+### Flujo de extracción
+
+1. Verificar acceso al cluster
+2. Ejecutar comandos de discovery (nodos, versión, operadores, storage, networking)
+3. Con los datos reales, generar las tablas de las secciones 140, 150, 160
+4. Para datos que no se pueden extraer (contexto del cliente, decisiones de diseño), usar `#TODO#`
 
 ---
 
@@ -272,12 +314,14 @@ Tabla con justificación y referencia oficial.
 ## Workflow
 
 1. **Bootstrap** — Clonar template o localizar CER existente
-2. **Variables** — Llenar `customer-vars.adoc` + `document-vars.adoc`
-3. **080 Resumen** — Objetivo, alcance, estado, pendientes
-4. **120 Alcance** — Tabla de actividades con estado
-5. **140 Arquitectura** — Tablas de sizing, topología, networking, storage
-6. **150 Implementación** — Procedimiento paso a paso con comandos
-7. **160 Validación** — Checklists PASS/FAIL + evidencias
-8. **180 Problemas** — Tablas causa raíz + resolución
-9. **190 Recomendaciones** — Tabla con referencia a docs oficiales
-10. **Finalizar** — `grep -r "#TODO#" content/` = vacío, `:docstatus: final`, `./generate-pdf`
+2. **Conectar** — Verificar acceso al cluster (`oc whoami` o SSH)
+3. **Descubrir** — Extraer datos del cluster (nodos, versión, operadores, storage, networking)
+4. **Variables** — Llenar `customer-vars.adoc` + `document-vars.adoc`
+5. **080 Resumen** — Objetivo, alcance, estado, pendientes
+6. **120 Alcance** — Tabla de actividades con estado
+7. **140 Arquitectura** — Tablas con datos reales del cluster (topología, sizing, networking, storage)
+8. **150 Implementación** — Procedimiento con comandos reales ejecutados
+9. **160 Validación** — Checklists PASS/FAIL verificadas en el cluster
+10. **180 Problemas** — Tablas causa raíz + resolución
+11. **190 Recomendaciones** — Tabla con referencia a docs oficiales
+12. **Finalizar** — `grep -r "#TODO#" content/` = vacío, `:docstatus: final`, `./generate-pdf`
