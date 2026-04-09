@@ -91,7 +91,13 @@ Si ya existe, leer primero: `vars/customer-vars.adoc`, `vars/redhat-vars.adoc`, 
 - **Variables**: Usar `{rhocp}`, `{ocp}`, `{rhconsulting}`, `{cliente}`, `{cust}` — NUNCA nombres hardcodeados
 - **Sin fechas**: NO poner fechas en secciones técnicas. Las fechas solo van en metadata (080)
 - **Sin nombres de cliente**: Usar SIEMPRE `{cliente}` o `{cust}` — NUNCA el nombre real
+- **Sin datos personales**: Tablas de participantes solo con Nombre / Rol / Correo corporativo. NUNCA teléfonos, celulares, extensiones, ni datos personales
 - **#TODO#**: Reemplazar TODOS antes de finalizar
+- **Texto justificado**: El theme PDF DEBE tener `base.text-align: justify` (no left)
+- **Resumen ejecutivo conciso**: Máximo 1 página. Bullets cortos con datos técnicos, sin párrafos largos
+- **Solo lo implementado por Red Hat**: El CER documenta EXCLUSIVAMENTE lo que {rhconsulting} implementó. NO incluir: aplicaciones del cliente (sizing, microservicios, nombres de producto del cliente), componentes de terceros no-Red Hat, capacidad de negocio, fases futuras. Si algo no se implementó: "No configurado" o "Fuera de alcance" — sin más
+- **Tablas font 7.5pt**: Theme PDF: `table.font-size: 7.5` y `table.head.font-size: 7.5`
+- **Code blocks font 7pt uniforme**: Theme PDF: `code.font-size: 7`, `code.font-family: Courier`, `code.background-color: #2D2D2D`, `code.font-color: #CCCCCC`. Mismo tamaño para TODOS los bloques de código del documento
 - **Pipes en tablas**: NUNCA usar `|` literal en comandos dentro de tablas AsciiDoc
 - **Listas + código**: SIEMPRE `+` entre item de lista y bloque `[source,bash]`
 
@@ -109,9 +115,9 @@ README.adoc (master document)
 │   ├── 020-070                        # Info proyecto (autor, participantes)
 │   ├── 080_resumen-ejecutivo.adoc     # Resumen ejecutivo
 │   ├── 090_sobre-el-cliente.adoc      # Contexto del cliente
-│   ├── 100_documentos-dado-cliente.adoc
+│   ├── 100_documentos-dado-cliente.adoc  # EXCLUIR — no va en el CER
 │   ├── 110_proposito-y-enfoque.adoc   # Propósito y enfoque
-│   ├── 120_resumen-del-alcance.adoc   # Alcance (tabla actividades + estado)
+│   ├── 120_resumen-del-alcance.adoc   # EXCLUIR — alcance ya está en 080
 │   ├── 140_architectura.adoc          # ARQUITECTURA TÉCNICA
 │   ├── 150_implementacion.adoc        # PROCEDIMIENTO DE IMPLEMENTACIÓN
 │   ├── 160_validacion.adoc            # VALIDACIÓN TÉCNICA
@@ -131,43 +137,32 @@ README.adoc (master document)
 
 ### 080 — Resumen Ejecutivo
 
-Estructura fija: Objetivo → Alcance → Estado actual → Pendientes del cliente → Fuera de alcance
+Estructura fija: Objetivo → Alcance (bullets) → Estado actual. Nada más.
 
 ```asciidoc
 *Objetivo* — {cliente} contrató {rhconsulting} para <descripción del engagement>.
 
-*Alcance* — <Fase/scope>: <descripción>.
+*Alcance* — <descripción breve del cluster/scope>.
 
-Las actividades realizadas incluyen:
 * <Actividad 1 con datos concretos>
 * <Actividad 2 con datos concretos>
 * <Actividad 3 con datos concretos>
 
 *Estado actual* — <estado del entregable>.
-
-*Acciones pendientes de {cust}*
-* <Acción con detalle técnico>
-
-*Fuera de alcance*
-* <Item con justificación técnica>
 ```
 
-Usar bullets concretos con versiones y cantidades. Sin prosa narrativa. Sin fechas.
+NO incluir: "Acciones pendientes del cliente", "Fuera de alcance", ni recomendaciones.
+El resumen solo documenta lo que se hizo y el estado final. Conciso, máximo 1 página.
 
-### 120 — Resumen del Alcance
+### 100 y 120 — EXCLUIR
 
-Tabla de actividades ejecutadas con estado. Sin cronología.
+- **100_documentos-dado-cliente**: NO incluir. Comentar en README.adoc.
+- **120_resumen-del-alcance**: NO incluir. El alcance se documenta en el Resumen Ejecutivo (080).
 
+Comentar en README.adoc con:
 ```asciidoc
-.Alcance del engagement
-[cols="1,4,2",options="header"]
-|===
-|# |Actividad |Estado
-
-|1 |<Actividad ejecutada> |[green]#Completado#
-|2 |<Actividad ejecutada> |[green]#Completado#
-|3 |<Actividad pendiente> |[red]#Pendiente# — <razón>
-|===
+// EXCLUIDO: Documentos entregados por {cust}
+// include::content/100_documentos-dado-cliente.adoc[leveloffset=+3]
 ```
 
 ### 140 — Arquitectura (SECCIÓN PRINCIPAL)
@@ -317,9 +312,8 @@ Tabla con justificación y referencia oficial.
 2. **Conectar** — Verificar acceso al cluster (`oc whoami` o SSH)
 3. **Descubrir** — Extraer datos del cluster (nodos, versión, operadores, storage, networking)
 4. **Variables** — Llenar `customer-vars.adoc` + `document-vars.adoc`
-5. **080 Resumen** — Objetivo, alcance, estado, pendientes
-6. **120 Alcance** — Tabla de actividades con estado
-7. **140 Arquitectura** — Tablas con datos reales del cluster (topología, sizing, networking, storage)
+5. **080 Resumen** — Objetivo, alcance, estado, pendientes (conciso, máx 1 página)
+6. **140 Arquitectura** — Tablas con datos reales del cluster (topología, sizing, networking, storage)
 8. **150 Implementación** — Procedimiento con comandos reales ejecutados
 9. **160 Validación** — Checklists PASS/FAIL verificadas en el cluster
 10. **180 Problemas** — Tablas causa raíz + resolución
