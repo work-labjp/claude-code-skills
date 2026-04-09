@@ -16,28 +16,26 @@ description: >
 Genera **Consulting Engagement Reports (CER)** como documentos técnicos con tablas,
 procedimientos, configuraciones y datos concretos. **NO es un diario de actividades.**
 
-## Filosofía: Documento Técnico, No Narrativo
+## Filosofía: Documento Técnico de Ejecución
 
-El CER es un **reporte técnico de implementación**:
+El CER documenta **qué se hizo y cómo**, no cuándo:
 - Tablas con datos concretos (versiones, IPs, sizing, configuraciones)
-- Procedimientos paso a paso con comandos y outputs
-- Arquitectura documentada con diagramas y decisiones técnicas
+- Procedimientos paso a paso con comandos reales
+- Validaciones con estado PASS/FAIL
 - Problemas con causa raíz y resolución técnica
 - Recomendaciones con justificación y referencia oficial
 
-**NO es**: un diario, un blog, una narrativa cronológica, ni prosa descriptiva.
+**NO es**: un diario, cronología, blog, ni narrativa. **Sin fechas** en el contenido técnico.
 
 ---
 
 ## Bootstrap
 
-### Nuevo CER
 ```bash
 git clone https://github.com/jeanlopezxyz/cer_template.git cer-<cliente>-<producto>-<año>
 ```
 
-### CER existente
-Antes de editar, leer: `vars/customer-vars.adoc`, `vars/redhat-vars.adoc`, y el archivo target.
+Si ya existe, leer primero: `vars/customer-vars.adoc`, `vars/redhat-vars.adoc`, y el archivo target.
 
 ---
 
@@ -45,14 +43,16 @@ Antes de editar, leer: `vars/customer-vars.adoc`, `vars/redhat-vars.adoc`, y el 
 
 - **NO modificar**: `content/aprobado-legalmente/`, `vars/render-vars.adoc`, `vars/redhat-vars.adoc`
 - **Idioma**: Español (es_US), tono profesional técnico
-- **Variables**: Usar `{rhocp}`, `{ocp}`, `{rhconsulting}`, etc. — no escribir nombres completos
+- **Variables**: Usar `{rhocp}`, `{ocp}`, `{rhconsulting}`, `{cliente}`, `{cust}` — NUNCA nombres hardcodeados
+- **Sin fechas**: NO poner fechas en secciones técnicas. Las fechas solo van en metadata (080)
+- **Sin nombres de cliente**: Usar SIEMPRE `{cliente}` o `{cust}` — NUNCA el nombre real
 - **#TODO#**: Reemplazar TODOS antes de finalizar
 - **Pipes en tablas**: NUNCA usar `|` literal en comandos dentro de tablas AsciiDoc
 - **Listas + código**: SIEMPRE `+` entre item de lista y bloque `[source,bash]`
 
 ---
 
-## Estructura del CER (documento técnico)
+## Estructura del CER
 
 ```
 README.adoc (master document)
@@ -62,27 +62,23 @@ README.adoc (master document)
 │   ├── aprobado-legalmente/           # NO TOCAR
 │   ├── 000_vars.adoc                  # Bindings
 │   ├── 020-070                        # Info proyecto (autor, participantes)
-│   │
 │   ├── 080_resumen-ejecutivo.adoc     # Resumen ejecutivo
 │   ├── 090_sobre-el-cliente.adoc      # Contexto del cliente
 │   ├── 100_documentos-dado-cliente.adoc
 │   ├── 110_proposito-y-enfoque.adoc   # Propósito y enfoque
 │   ├── 120_resumen-del-alcance.adoc   # Alcance (tabla actividades + estado)
-│   │
 │   ├── 140_architectura.adoc          # ARQUITECTURA TÉCNICA
 │   ├── 150_implementacion.adoc        # PROCEDIMIENTO DE IMPLEMENTACIÓN
 │   ├── 160_validacion.adoc            # VALIDACIÓN TÉCNICA
 │   ├── 170_conocimiento.adoc          # Transferencia de conocimiento
 │   ├── 180_problemas_resoluciones.adoc # Problemas y resoluciones
-│   │
 │   ├── 190_recomendaciones-tecnicales.adoc
 │   ├── 200_recomendaciones-entrenamiento.adoc
 │   ├── 210_otra-recomendaciones.adoc
 │   └── 220-260 (apéndices opcionales)
 ```
 
-**NOTA**: NO existe `130_diario.adoc`. El CER no es un diario cronológico.
-El alcance se documenta en `120_resumen-del-alcance.adoc` (tabla de sprints).
+**NO existe 130_diario.adoc**. El CER no es cronológico.
 
 ---
 
@@ -90,33 +86,32 @@ El alcance se documenta en `120_resumen-del-alcance.adoc` (tabla de sprints).
 
 ### 080 — Resumen Ejecutivo
 
-Estructura: Objetivo → Alcance (bullets técnicos) → Estado actual → Acciones pendientes del cliente → Fuera de alcance
+Estructura fija: Objetivo → Alcance → Estado actual → Pendientes del cliente → Fuera de alcance
 
 ```asciidoc
-*Objetivo* — {cliente} contrató {rhconsulting} para la implementación de {rhocp} 4.18...
+*Objetivo* — {cliente} contrató {rhconsulting} para <descripción del engagement>.
 
-*Alcance* — Fase 1: despliegue del clúster {ocp} para Dev y QA.
+*Alcance* — <Fase/scope>: <descripción>.
 
 Las actividades realizadas incluyen:
-* Instalación del clúster con N nodos: N masters, N infra, N workers
-* Configuraciones Day-2: labels, taints, MCP, ingress, monitoring, LDAP...
-* Instalación de operadores: {rhamq}, ArgoCD, Tekton...
+* <Actividad 1 con datos concretos>
+* <Actividad 2 con datos concretos>
+* <Actividad 3 con datos concretos>
 
-*Estado actual* — Clúster *operativo*, N nodos `Ready`.
+*Estado actual* — <estado del entregable>.
 
 *Acciones pendientes de {cust}*
-* Acción 1 con detalle técnico
-* Acción 2 con detalle técnico
+* <Acción con detalle técnico>
 
-*Fuera de alcance de Fase N*
-* Item con justificación técnica
+*Fuera de alcance*
+* <Item con justificación técnica>
 ```
 
-**NO**: prosa narrativa. **SÍ**: bullets concretos con versiones, cantidades, nombres técnicos.
+Usar bullets concretos con versiones y cantidades. Sin prosa narrativa. Sin fechas.
 
 ### 120 — Resumen del Alcance
 
-Lista de actividades ejecutadas con estado. Sin formato de sprints ni cronológico.
+Tabla de actividades ejecutadas con estado. Sin cronología.
 
 ```asciidoc
 .Alcance del engagement
@@ -124,105 +119,130 @@ Lista de actividades ejecutadas con estado. Sin formato de sprints ni cronológi
 |===
 |# |Actividad |Estado
 
-|1
-|Instalación del clúster {ocp} 4.18 (Agent-based Installer, 13 nodos)
-|[green]#Completado#
-
-|2
-|Configuraciones Day-2 (infra nodes, ingress, monitoring, LDAP, NTP, backup)
-|[green]#Completado#
-
-|3
-|Instalación de operadores ({rhamq}, ArgoCD, Tekton, Apicurio)
-|[green]#Completado#
-
-|4
-|Transferencia de conocimiento (4 sesiones)
-|[green]#Completado#
-
-|5
-|Logging centralizado (LokiStack + Vector)
-|[red]#Pendiente# — requiere backend S3
+|1 |<Actividad ejecutada> |[green]#Completado#
+|2 |<Actividad ejecutada> |[green]#Completado#
+|3 |<Actividad pendiente> |[red]#Pendiente# — <razón>
 |===
 ```
 
-### 140 — Arquitectura (SECCIÓN PRINCIPAL TÉCNICA)
+### 140 — Arquitectura (SECCIÓN PRINCIPAL)
 
 Subsecciones (remover las que no aplican):
 
-1. **Diagrama de alto nivel** — imagen + tabla de clústeres
-2. **Workloads sobre {ocp}** — tabla con cada operador/componente: descripción, CPU, RAM, storage, nodos
-3. **Topología de nodos** — tabla Nodo/IP/Rol/VLAN/vCPU/RAM
+1. **Diagrama de alto nivel** — imagen + tabla de clústeres/ambientes
+2. **Workloads** — tabla sizing: Componente / Descripción / CPU / RAM / Storage / Nodos
+3. **Topología de nodos** — tabla: Nodo / IP / Rol / VLAN / vCPU / RAM
 4. **Networking** — VLANs, load balancers, DNS, firewalls, puertos
-5. **Storage** — StorageClasses, PVCs, NFS/ODF/LSO
+5. **Storage** — StorageClasses, PVCs, backends
 6. **Seguridad** — TLS, OAuth/LDAP, RBAC, SCC
-7. **Monitoring y Logging** — stack, PVCs, alertas
+7. **Monitoring y Logging** — stack, storage, alertas
 8. **CI/CD** — pipelines, GitOps (si aplica)
 
-**Formato**: SIEMPRE tablas con datos concretos. Ejemplo:
+Formato obligatorio para sizing:
 
 ```asciidoc
-.Operadores {rh} — dimensionamiento
-[cols="2,4,1,1,2,2,2,1",options="header"]
+.Componentes — dimensionamiento
+[cols="2,4,2,2,2,1",options="header"]
 |===
-|Componente |Descripción |Dev |QA |CPU request |RAM request |Storage |Nodos
-|*{rhamq} (Kafka)*
-|3 brokers KRaft mode, retención 7 días
-|SI |SI |3.7 vCPU |6.9 GB |15 GB (LSO) |Workers
+|Componente |Descripción |CPU request |RAM request |Storage |Nodos
+|*<nombre>* |<descripción técnica> |X vCPU |X GB |X GB (<tipo>) |<rol>
+|===
+```
+
+Formato obligatorio para topología:
+
+```asciidoc
+.Topología de nodos
+[cols="1,1,1,1,1,1",options="header"]
+|===
+|Nodo |IP |Rol |VLAN |vCPU |RAM
+|<hostname> |<ip> |<rol> |<vlan> |<N> |<N> GB
 |===
 ```
 
 ### 150 — Implementación (procedimiento técnico)
 
-Estructura por fases con tablas de prerrequisitos y pasos:
+Estructura por fases:
 
-1. **Fase 0 — Prerrequisitos** — tabla con # / Prerrequisito / Estado (`[green]#Completado#`)
-2. **Fase 1 — Preparación del bastion** — tabla de parámetros + comandos
-3. **Fase 2 — Generación del ISO** — install-config.yaml + agent-config.yaml
-4. **Fase 3 — Instalación** — boot, wait-for, approve CSRs
+1. **Fase 0 — Prerrequisitos** — tabla: # / Prerrequisito / Estado
+2. **Fase 1 — Preparación** — tabla de parámetros + bloques `[source,bash]`
+3. **Fase 2 — Configuración** — YAMLs documentados con `[source,yaml]`
+4. **Fase 3 — Instalación** — comandos ejecutados
 5. **Fase 4 — Day-2** — cada configuración con comando y verificación
 
-**Formato**: Procedimiento paso a paso con `[source,bash]` y outputs esperados.
+Formato para prerrequisitos:
+
+```asciidoc
+.Checklist de prerequisitos
+[cols="1,4,2",options="header"]
+|===
+|# |Prerequisito |Estado
+|1 |<descripción> |[green]#Completado#
+|2 |<descripción> |[green]#Completado#
+|===
+```
 
 ### 160 — Validación
 
-Resumen de las pruebas ejecutadas. Referencia al ATP si existe.
+Tablas de checklist con estado PASS/FAIL. Referencia al ATP si existe.
+
+Formato para validaciones:
 
 ```asciidoc
-Se ejecutaron N pruebas de aceptación cubriendo:
-* Instalación: nodos, operators, etcd, MCP
-* Day-2: infra nodes, ingress, monitoring, LDAP, backup
-* Networking: DNS, multi-VLAN, OVN-Kubernetes
-* Operadores: AMQ Streams, ArgoCD, Tekton
+.Validación post-instalación
+[cols="1,4,2,1",options="header"]
+|===
+|# |Validación |Comando |Estado
+|1 |<qué se valida> |`<comando oc>` |[green]#PASS#
+|2 |<qué se valida> |`<comando oc>` |[green]#PASS#
+|===
+```
 
-Resultado: todas las pruebas ejecutadas satisfactoriamente.
-Ver documento ATP adjunto para detalle completo.
+Para pendientes usar: `Acción requerida de {cust} — <detalle>`
+
+Evidencias con:
+```asciidoc
+.Evidencia: <descripción>
+image::../evidencias/<nombre>.png[width=100%,align=center]
 ```
 
 ### 180 — Problemas y Resoluciones
 
-Por CADA problema, estructura técnica:
+Tablas técnicas por categoría. Sin narrativa.
+
+Formato para discrepancias:
 
 ```asciidoc
-= Nombre del problema
-== Desafío
-Descripción técnica: qué ocurrió, impacto, causa raíz.
-== Resolución
-Pasos técnicos ejecutados para resolver. Comandos, configs, tickets.
-== Recomendación
-Fix permanente para evitar recurrencia.
+.Discrepancias documentales
+[cols="1,3,3",options="header"]
+|===
+|ID |Problema |Resolución
+|D1 |<qué se encontró> |<cómo se resolvió>
+|===
+```
+
+Formato para problemas de infraestructura:
+
+```asciidoc
+.Problemas y resoluciones
+[cols="2,2,3,1",options="header"]
+|===
+|Problema |Causa |Resolución |Estado
+|<qué pasó> |<causa raíz> |<cómo se resolvió> |[green]#Resuelto#
+|===
 ```
 
 ### 190 — Recomendaciones Técnicas
 
-Por CADA recomendación:
+Tabla con justificación y referencia oficial.
 
 ```asciidoc
-== Nombre de la recomendación
-=== Indicación
-Qué se observó durante el engagement.
-=== Recomendación
-Qué recomienda {rhconsulting}. Incluir referencia a docs oficiales.
+.Recomendaciones técnicas
+[cols="2,4,2",options="header"]
+|===
+|Recomendación |Justificación |Documentación
+|*<producto o acción>* |<por qué se recomienda> |<link a docs oficiales>
+|===
 ```
 
 ---
@@ -254,7 +274,7 @@ Qué recomienda {rhconsulting}. Incluir referencia a docs oficiales.
 4. **120 Alcance** — Tabla de actividades con estado
 5. **140 Arquitectura** — Tablas de sizing, topología, networking, storage
 6. **150 Implementación** — Procedimiento paso a paso con comandos
-7. **160 Validación** — Resumen + referencia al ATP
-8. **180 Problemas** — Causa raíz + resolución técnica
-9. **190 Recomendaciones** — Con referencia a docs oficiales
+7. **160 Validación** — Checklists PASS/FAIL + evidencias
+8. **180 Problemas** — Tablas causa raíz + resolución
+9. **190 Recomendaciones** — Tabla con referencia a docs oficiales
 10. **Finalizar** — `grep -r "#TODO#" content/` = vacío, `:docstatus: final`, `./generate-pdf`
