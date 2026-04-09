@@ -8,6 +8,9 @@ description: >
   Red Hat", or any OCP/OpenShift technical question that requires official reference.
   Uses mcp__context7__resolve-library-id with /openshift/openshift-docs library.
   Do NOT use for generating documents (use redhat-cer-docs or redhat-atp-docs).
+user-invocable: true
+argument-hint: "[topic]"
+allowed-tools: Read Grep mcp__context7__resolve-library-id mcp__context7__query-docs
 ---
 
 # OpenShift Red Hat Official Documentation Query

@@ -8,6 +8,9 @@ description: >
   Playwright — no screen required. Generates styled HTML rendered to PNG with dark
   terminal theme, monospace font, and proper colors. Supports single commands and
   batch mode for multiple screenshots.
+user-invocable: true
+argument-hint: "[command-or-text]"
+allowed-tools: Bash Read Write mcp__playwright__browser_navigate mcp__playwright__browser_take_screenshot mcp__playwright__browser_run_code
 ---
 
 # Terminal Screenshot Generator

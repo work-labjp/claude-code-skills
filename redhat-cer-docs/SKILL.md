@@ -9,6 +9,9 @@ description: >
   Engagement Reports in AsciiDoc/Spanish as TECHNICAL documents with tables, procedures,
   and concrete data. Do NOT use for ATP/acceptance test plans (use redhat-atp-docs).
   CER = technical consulting report. ATP = test cases with pass/fail.
+user-invocable: true
+argument-hint: "[sección] [producto]"
+allowed-tools: Read Glob Grep Edit Write Bash
 ---
 
 # Red Hat CER Documentation Skill

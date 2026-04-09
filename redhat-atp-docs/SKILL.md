@@ -13,6 +13,9 @@ description: >
   AsciiDoc (.adoc) + evidence script (.sh) + PDF with REAL data from the cluster.
   Do NOT use for CER/engagement reports (use redhat-cer-docs).
   ATP = executable test cases with pass/fail verified on the cluster.
+user-invocable: true
+argument-hint: "[productos] [cluster-info]"
+allowed-tools: Read Glob Grep Edit Write Bash
 ---
 
 # Red Hat ATP Documentation Skill v2

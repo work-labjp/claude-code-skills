@@ -10,6 +10,9 @@ description: >
   topology, VLANs, infrastructure, or network architecture -> use THIS skill.
   Do NOT use for Mermaid diagrams (use beautiful-mermaid), flowcharts, sequence diagrams,
   class diagrams, ER diagrams, component-level software architecture, or non-Red Hat diagrams.
+user-invocable: true
+argument-hint: "[tipo-diagrama]"
+allowed-tools: Read Write Glob Grep Bash
 ---
 
 # Red Hat draw.io Architecture Diagrams
