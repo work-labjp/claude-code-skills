@@ -109,6 +109,17 @@ Contiene templates AsciiDoc obligatorios: header, secciones, caso de prueba, res
 - Campos: Objetivo → Resultado esperado → Procedimiento → Observaciones → Evidencia → Estado
 - `<<<` antes de cada caso. NUNCA pipes `|` en comandos dentro de tablas.
 - Resumen: `[cols="1,8,1"]`, fases con `3+| *FASE N --`, estado `icon:square-o[]`
+- **Theme PDF desde assets — SIEMPRE sincronizar**: el theme es la fuente de verdad. Copiar SIEMPRE antes de generar:
+  ```bash
+  cp ~/.claude/skills/redhat-atp-docs/assets/styles/pdf/redhat-theme.yml <atp-dir>/styles/pdf/redhat-theme.yml
+  ```
+  Verificar con `md5` que el theme local coincide con el del skill. NUNCA modificar el theme local manualmente.
+- **docstatus: final**: el ATP SIEMPRE se entrega con `:docstatus: final`. NUNCA dejar `draft`.
+- **Sin secciones vacías**: NUNCA dejar un heading seguido de otro heading sin prosa de por medio. Cada sección DEBE tener al menos 1-2 frases de introducción. Si una sección no tiene sentido como grouping, ELIMINAR el wrapper. Verificar antes de generar:
+  ```bash
+  awk 'BEGIN{prev=""; prev_ln=0; empty=1} /^=+ / {if (prev != "" && empty == 1) print NR": "prev; prev=$0; prev_ln=NR; empty=1; next} /^[^=\/]/ && NF>0 && !/^:/ && !/^\/\// {empty=0} END {if (prev != "" && empty == 1) print prev_ln": "prev}' ATP_*.adoc
+  ```
+  La salida DEBE estar vacía.
 
 ---
 

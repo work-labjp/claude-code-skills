@@ -96,11 +96,17 @@ Si ya existe, leer primero: `vars/customer-vars.adoc`, `vars/redhat-vars.adoc`, 
 - **Texto justificado**: El theme PDF DEBE tener `base.text-align: justify` (no left)
 - **Resumen ejecutivo conciso**: Máximo 1 página. Bullets cortos con datos técnicos, sin párrafos largos
 - **Solo lo implementado por Red Hat**: El CER documenta EXCLUSIVAMENTE lo que {rhconsulting} implementó. NO incluir: aplicaciones del cliente (sizing, microservicios, nombres de producto del cliente), componentes de terceros no-Red Hat, capacidad de negocio, fases futuras. Si algo no se implementó: "No configurado" o "Fuera de alcance" — sin más
-- **Theme PDF desde assets**: NO mantener el theme manualmente. Copiar el theme oficial del skill:
+- **Theme PDF desde assets — SIEMPRE sincronizar**: El theme es la fuente de verdad. Copiar SIEMPRE antes de generar el PDF (nunca modificar el theme local del proyecto):
   ```bash
   cp ~/.claude/skills/redhat-cer-docs/assets/styles/pdf/redhat-theme.yml <cer-dir>/styles/pdf/redhat-theme.yml
   ```
-  El mismo archivo se usa para CER, LLD y ATP. Contiene: base 8.5pt (texto corrido), tablas 7pt, code 6pt Courier, admoniciones 7pt, headings absolutos (h1 19, h2 15.2, h3 12.8, h4 11.4, h5 10.4, h6 10), texto justificado, fuente RedHatText, header/footer Red Hat Consulting.
+  Verificar con `md5` que el theme local coincide con el del skill antes de entregar. El mismo archivo se usa para CER, LLD y ATP. Contiene: base 8.5pt (texto corrido), tablas 7pt, code 6pt Courier, admoniciones 7pt, headings absolutos (h1 19, h2 15.2, h3 12.8, h4 11.4, h5 10.4, h6 10), texto justificado, fuente RedHatText, header/footer Red Hat Consulting.
+- **docstatus: final**: El CER SIEMPRE se entrega con `:docstatus: final` en `vars/document-vars.adoc`. NUNCA dejar `draft`. Verificar antes de generar el PDF final.
+- **Sin secciones vacías**: NUNCA dejar un heading (`=`, `==`, `===`, etc.) seguido inmediatamente de otro heading sin prosa de por medio. Cada heading DEBE tener al menos una línea de introducción (1-2 frases) antes del siguiente subheading. Si una sección no tiene contenido propio ni sentido como grouping, ELIMINAR el wrapper y promover los hijos. Verificar con:
+  ```bash
+  for f in content/*.adoc; do awk -v file="$f" 'BEGIN{prev=""; prev_ln=0; empty=1} /^=+ / {if (prev != "" && empty == 1) print file":"prev_ln": "prev; prev=$0; prev_ln=NR; empty=1; next} /^[^=\/]/ && NF>0 && !/^:/ && !/^\/\// {empty=0} END {if (prev != "" && empty == 1) print file":"prev_ln": "prev}' "$f"; done
+  ```
+  La salida DEBE estar vacía antes de generar el PDF.
 - **Pipes en tablas**: NUNCA usar `|` literal en comandos dentro de tablas AsciiDoc
 - **Listas + código**: SIEMPRE `+` entre item de lista y bloque `[source,bash]`
 
@@ -321,4 +327,4 @@ Tabla con justificación y referencia oficial.
 9. **160 Validación** — Checklists PASS/FAIL verificadas en el cluster
 10. **180 Problemas** — Tablas causa raíz + resolución
 11. **190 Recomendaciones** — Tabla con referencia a docs oficiales
-12. **Finalizar** — `grep -r "#TODO#" content/` = vacío, `:docstatus: final`, `./generate-pdf`
+12. **Finalizar** — verificar: (1) `grep -r "#TODO#" content/` = vacío, (2) `:docstatus: final` en `vars/document-vars.adoc`, (3) theme local igual al del skill (`md5` coincide), (4) sin secciones vacías (script awk arriba), (5) `./generate-pdf`
