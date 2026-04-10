@@ -201,11 +201,18 @@ Si un comando falla o no muestra lo necesario:
 ├── evidencias/
 ├── fonts/          # Copiar de CER/LLD del proyecto
 ├── locale/         # Copiar de CER/LLD del proyecto
-├── styles/pdf/     # Copiar de CER/LLD del proyecto
+├── styles/pdf/     # Copiar desde assets del skill
 └── generate-pdf    # Copiar de scripts/generate-pdf.sh
 ```
 
-Assets: copiar desde CER/LLD. Ver `references/format-banplus.md` para detalles.
+**Theme PDF**: Copiar desde el asset del skill (mismo theme para CER, LLD y ATP):
+```bash
+cp ~/.claude/skills/redhat-atp-docs/assets/styles/pdf/redhat-theme.yml <atp-dir>/styles/pdf/redhat-theme.yml
+```
+
+Contiene: base 9.5pt, tablas 7pt, code 6pt Courier, admoniciones 7pt, texto justificado, fuente RedHatText.
+
+Assets (fonts, locale, images): copiar desde CER/LLD del mismo proyecto.
 PDF: `scripts/generate-pdf.sh` con `quay.io/redhat-cop/ubi8-asciidoctor:v2.2.1`.
 
 ---
