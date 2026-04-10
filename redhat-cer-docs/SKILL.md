@@ -96,11 +96,11 @@ Si ya existe, leer primero: `vars/customer-vars.adoc`, `vars/redhat-vars.adoc`, 
 - **Texto justificado**: El theme PDF DEBE tener `base.text-align: justify` (no left)
 - **Resumen ejecutivo conciso**: Máximo 1 página. Bullets cortos con datos técnicos, sin párrafos largos
 - **Solo lo implementado por Red Hat**: El CER documenta EXCLUSIVAMENTE lo que {rhconsulting} implementó. NO incluir: aplicaciones del cliente (sizing, microservicios, nombres de producto del cliente), componentes de terceros no-Red Hat, capacidad de negocio, fases futuras. Si algo no se implementó: "No configurado" o "Fuera de alcance" — sin más
-- **Tipografía compacta (obligatoria)**: Theme PDF debe tener:
-  - `base.font-size: 9.5` (texto principal)
-  - `table.font-size: 6.5` y `table.head.font-size: 6.5` (tablas compactas)
-  - `code.font-size: 6`, `code.font-family: Courier`, `code.background-color: #2D2D2D`, `code.font-color: #CCCCCC` (bloques de código uniformes)
-- **Theme compartido CER/LLD**: Ambos documentos usan el MISMO theme PDF. Si se modifica uno, copiar al otro.
+- **Theme PDF desde assets**: NO mantener el theme manualmente. Copiar el theme oficial del skill:
+  ```bash
+  cp ~/.claude/skills/redhat-cer-docs/assets/styles/pdf/redhat-theme.yml <cer-dir>/styles/pdf/redhat-theme.yml
+  ```
+  El mismo archivo se usa para CER y LLD. Contiene: base 9.5pt, tablas 6.5pt, code 6pt Courier, texto justificado, fuente RedHatText, header/footer Red Hat Consulting.
 - **Pipes en tablas**: NUNCA usar `|` literal en comandos dentro de tablas AsciiDoc
 - **Listas + código**: SIEMPRE `+` entre item de lista y bloque `[source,bash]`
 
