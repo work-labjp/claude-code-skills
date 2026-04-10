@@ -96,8 +96,11 @@ Si ya existe, leer primero: `vars/customer-vars.adoc`, `vars/redhat-vars.adoc`, 
 - **Texto justificado**: El theme PDF DEBE tener `base.text-align: justify` (no left)
 - **Resumen ejecutivo conciso**: Máximo 1 página. Bullets cortos con datos técnicos, sin párrafos largos
 - **Solo lo implementado por Red Hat**: El CER documenta EXCLUSIVAMENTE lo que {rhconsulting} implementó. NO incluir: aplicaciones del cliente (sizing, microservicios, nombres de producto del cliente), componentes de terceros no-Red Hat, capacidad de negocio, fases futuras. Si algo no se implementó: "No configurado" o "Fuera de alcance" — sin más
-- **Tablas font 7.5pt**: Theme PDF: `table.font-size: 7.5` y `table.head.font-size: 7.5`
-- **Code blocks font 7pt uniforme**: Theme PDF: `code.font-size: 7`, `code.font-family: Courier`, `code.background-color: #2D2D2D`, `code.font-color: #CCCCCC`. Mismo tamaño para TODOS los bloques de código del documento
+- **Tipografía compacta (obligatoria)**: Theme PDF debe tener:
+  - `base.font-size: 9.5` (texto principal)
+  - `table.font-size: 6.5` y `table.head.font-size: 6.5` (tablas compactas)
+  - `code.font-size: 6`, `code.font-family: Courier`, `code.background-color: #2D2D2D`, `code.font-color: #CCCCCC` (bloques de código uniformes)
+- **Theme compartido CER/LLD**: Ambos documentos usan el MISMO theme PDF. Si se modifica uno, copiar al otro.
 - **Pipes en tablas**: NUNCA usar `|` literal en comandos dentro de tablas AsciiDoc
 - **Listas + código**: SIEMPRE `+` entre item de lista y bloque `[source,bash]`
 
