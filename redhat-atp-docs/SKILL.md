@@ -210,7 +210,7 @@ Si un comando falla o no muestra lo necesario:
 cp ~/.claude/skills/redhat-atp-docs/assets/styles/pdf/redhat-theme.yml <atp-dir>/styles/pdf/redhat-theme.yml
 ```
 
-Contiene: base 9.5pt, tablas 7pt, code 6pt Courier, admoniciones 7pt, texto justificado, fuente RedHatText.
+Contiene: base 8.5pt (texto corrido), tablas 7pt, code 6pt Courier, admoniciones 7pt, headings absolutos (h1 19, h2 15.2, h3 12.8, h4 11.4, h5 10.4, h6 10), texto justificado, fuente RedHatText.
 
 Assets (fonts, locale, images): copiar desde CER/LLD del mismo proyecto.
 PDF: `scripts/generate-pdf.sh` con `quay.io/redhat-cop/ubi8-asciidoctor:v2.2.1`.

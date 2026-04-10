@@ -100,7 +100,7 @@ Si ya existe, leer primero: `vars/customer-vars.adoc`, `vars/redhat-vars.adoc`, 
   ```bash
   cp ~/.claude/skills/redhat-cer-docs/assets/styles/pdf/redhat-theme.yml <cer-dir>/styles/pdf/redhat-theme.yml
   ```
-  El mismo archivo se usa para CER, LLD y ATP. Contiene: base 9.5pt, tablas 7pt, code 6pt Courier, admoniciones 7pt, headings proporcionales (h1 2.0x, h2 1.6x, h3 1.35x), texto justificado, fuente RedHatText, header/footer Red Hat Consulting.
+  El mismo archivo se usa para CER, LLD y ATP. Contiene: base 8.5pt (texto corrido), tablas 7pt, code 6pt Courier, admoniciones 7pt, headings absolutos (h1 19, h2 15.2, h3 12.8, h4 11.4, h5 10.4, h6 10), texto justificado, fuente RedHatText, header/footer Red Hat Consulting.
 - **Pipes en tablas**: NUNCA usar `|` literal en comandos dentro de tablas AsciiDoc
 - **Listas + código**: SIEMPRE `+` entre item de lista y bloque `[source,bash]`
 

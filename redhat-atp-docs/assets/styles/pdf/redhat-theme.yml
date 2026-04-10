@@ -17,7 +17,7 @@ page:
 base:
   text-align: justify
   font-family: RedHatText
-  font-size: 9.5
+  font-size: 8.5
 
 role:
   example:
@@ -144,21 +144,21 @@ admonition:
   padding: [6, 8, 6, 8]
 
 heading-h1:
-  font-size: $base-font-size * 2.0
+  font-size: 19
 heading-h2:
-  font-size: $base-font-size * 1.6
+  font-size: 15.2
 heading-h3:
-  font-size: $base-font-size * 1.35
+  font-size: 12.8
 heading-h4:
-  font-size: $base-font-size * 1.2
+  font-size: 11.4
 heading-h5:
-  font-size: $base-font-size * 1.1
+  font-size: 10.4
 heading-h6:
-  font-size: $base-font-size * 1.05
+  font-size: 10
 heading-h7:
-  font-size: $base-font-size
+  font-size: 9.5
 heading-h8:
-  font-size: $base-font-size
+  font-size: 9.5
 heading-h9:
-  font-size: $base-font-size
+  font-size: 9.5
 
