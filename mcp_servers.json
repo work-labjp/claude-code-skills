@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    },
+    "context7": {
+      "command": "/home/jeanlopez/.local/bin/uvx",
+      "args": ["mcp-context7"]
+    },
+    "github": {
+      "command": "gh",
+      "args": ["mcp"]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "@anthropic/mcp-server-filesystem@latest",
+        "/home/jeanlopez"
+      ]
+    }
+  }
+}
